@@ -110,12 +110,12 @@ The remaining part of this manual can be done in lab or at home. But it is recom
 A simple data visualization script is provided ```filePlotter.py```. You can use/adapt/modify this script or create your own to visualize the data.
 By running the script, you will be able to create plots for the data collected. 
 
-*Plot the sensor data that you collected for the different movements from Part 6*.
+*Plot the sensor data that you collected for the different movements from Part 6: laser scans, IMU data, and odometry data.*.
 These plots should help you with your discussions at the end of this manual.
 
 - Find ```filePlotter.py``` in the current branch (labOne), and download it.
 - Navigate to its directory, and run: ```python3 filePlotter.py --files imu_content_spiral.csv```
-- Generate plots for the data collected for each motion sequence.
+- Generate plots for the data collected for each motion sequence (laser scans, IMU, and odometry).
 
 ## Part 8 - Map acquisition (10 marks)
 
