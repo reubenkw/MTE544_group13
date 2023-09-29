@@ -108,7 +108,9 @@ By running ```motions.py``` with different motion sequences, ```.csv``` files wi
 The remaining part of this manual can be done in lab or at home. But it is recommended that you perform some plots to check the quality of the data before leaving the lab. You will not be able to recollect the data at another time if you did not perform this check.
 
 A simple data visualization script is provided ```filePlotter.py```. You can use/adapt/modify this script or create your own to visualize the data.
-By running the script, you will be able to create plots for the data collected. Plot the sensor data that you collected for the different movements from Part 6.
+By running the script, you will be able to create plots for the data collected. 
+
+*Plot the sensor data that you collected for the different movements from Part 6*.
 These plots should help you with your discussions at the end of this manual.
 
 - Find ```filePlotter.py``` in the current branch (labOne), and download it.
