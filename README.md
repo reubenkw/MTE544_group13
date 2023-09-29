@@ -156,7 +156,7 @@ Please prepare a written report containing in the front page:
 
 In a maximum of 2 pages (excluding the front page), report the following:
 - The plots you obtained. The plots should have, title, label name for axis, legends, different shapes/colors for each data, and grids.
-- A screenshot of both of your obtained map.
+- A screenshot of your obtained map.
 - A brief explanation of the obtained plots (can be in the figure captions), and a brief discussion (interpretation, quality, etc) to show your understanding of the sensor information. *Hint*: you may leverage on the course material and the online documentation of the messages to better interpret your data.
 
 ## Submission
