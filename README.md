@@ -46,6 +46,11 @@ ros2 run teleop_twist_keyboard teleop_twist_keyboard
 
 See the prompt for help on the keys. 
 
+To dock the robot, use:
+```
+ros2 action send_goal /dock irobot_create_msgs/action/Dock {}
+```
+
 ### Lead the robot to your seat and let a TA know to get your checkmark for grading!
 
 ## Part 3 - Setting up your code (15 marks)
