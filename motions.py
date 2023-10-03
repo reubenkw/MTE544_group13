@@ -67,6 +67,9 @@ class motion_executioner(Node):
 
 
     # TODO Part 5: Callback functions: complete the callback functions of the three sensors to log the proper data.
+    # To also log the time you need to use the rclpy Time class, each ros msg will come with a header, and then
+    # inside the header you have a stamp that has the time in seconds and nanoseconds, you should log it in nanoseconds as 
+    # such: Time.from_msg(imu_msg.header.stamp).nanoseconds
     # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
 
     def imu_callback(self, imu_msg: Imu):
