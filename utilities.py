@@ -84,8 +84,9 @@ def euler_from_quaternion(quat):
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
+    # pitch and roll should be confirmed
     x, y, z, w = quat.x, quat.y, quat.z, quat.w
-    roll = atan2(2 * (w * z + x * y), 1 - 2 * (y ** 2 + z ** 2))
+    yaw = atan2(2 * (w * z + x * y), 1 - 2 * (y ** 2 + z ** 2))
     pitch = atan2(2 * (w * x + y * z), 1 - 2 * (x ** 2 + y ** 2))
-    yaw = asin(2 * (w * y - x * z))
+    roll = asin(2 * (w * y - x * z))
     return yaw

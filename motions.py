@@ -43,10 +43,10 @@ class motion_executioner(Node):
         self.laser_initialized=False
         
         # for spiral twist (decreasing rad clockwise)
-        self.spiral_max = -5.0
-        self.spiral_incr = -0.01
+        self.spiral_max = 0.0
+        self.spiral_incr = 0.02
         # start with no turn
-        self.ang_z = 0.0
+        self.ang_z = -5.0
 
         # TODO Part 3: Create a publisher to send velocity commands by setting the proper parameters in (...)
         self.vel_publisher=self.create_publisher(Twist, "/cmd_vel", 10)
@@ -60,7 +60,7 @@ class motion_executioner(Node):
         self.imu_logger=Logger(f"{dir}/imu.csv", headers=["acc_x", "acc_y", "angular_z", "stamp"])
         self.odom_logger=Logger(f"{dir}/odom.csv", headers=["x","y","th", "stamp"])
         self.laser_logger=Logger(f"{dir}/laser.csv", headers=["ranges", "stamp"])
-        
+
         # TODO Part 3: Create the QoS profile by setting the proper parameters in (...)
         """
         QoS profile:
@@ -69,7 +69,7 @@ class motion_executioner(Node):
         Durability: VOLATILE
         """
 
-        qos = QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
+        qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription /imu
@@ -95,7 +95,7 @@ class motion_executioner(Node):
     def imu_callback(self, imu_msg: Imu):
         # log imu msgs
         stamp = imu_msg.header.stamp.sec*1e9 + imu_msg.header.stamp.nanosec
-        
+
         msg = [imu_msg.linear_acceleration.x,
                imu_msg.linear_acceleration.y,
                imu_msg.angular_velocity.z,
@@ -106,7 +106,7 @@ class motion_executioner(Node):
     def odom_callback(self, odom_msg: Odometry):
         # log odom msgs
         th = euler_from_quaternion(odom_msg.pose.pose.orientation)
-
+        
         stamp = odom_msg.header.stamp.sec*1e9 + odom_msg.header.stamp.nanosec
         
         msg = [odom_msg.pose.pose.position.x,
@@ -159,13 +159,13 @@ class motion_executioner(Node):
         # twist msg for circular motion
         msg=Twist()
         msg.linear.x = 1.0
-        msg.angular.z = -1.0
+        msg.angular.z = -3.0
         return msg
 
     def make_spiral_twist(self):
         # twist msg for spiral motion
-        # decreasing rad clockwise
-        if self.ang_z > self.spiral_max:
+        # increasing rad clockwise
+        if self.ang_z < self.spiral_max:
             # ang will be more negative each step
             self.ang_z += self.spiral_incr
         
@@ -178,7 +178,7 @@ class motion_executioner(Node):
         # accelerate line twist??
         # twist msg for line motion
         msg=Twist()
-        msg.linear.x = 1.0
+        msg.linear.x = 0.1
         return msg
 
 import argparse
