@@ -1,6 +1,7 @@
 # Imports
 import os
 
+import numpy as np
 import rclpy
 
 from rclpy.node import Node
@@ -119,7 +120,7 @@ class motion_executioner(Node):
         # log laser msgs with position msg at that time
 
         # (Note: values < range_min or > range_max should be discarded)
-        valid_ranges = [rng if laser_msg.range_min < rng < laser_msg.range_max else "NaN" for rng in laser_msg.ranges]
+        valid_ranges = [rng if laser_msg.range_min < rng < laser_msg.range_max else np.NaN for rng in laser_msg.ranges]
 
         stamp = laser_msg.header.stamp.sec*1e9 + laser_msg.header.stamp.nanosec
 

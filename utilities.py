@@ -71,10 +71,7 @@ class FileReader:
                 for val in values:
                     if val == '':
                         break
-                    try:
-                        row.append(float(val.strip()))
-                    except ValueError:
-                        row.append(0)
+                    row.append(float(val.strip()))
 
                 table.append(row)
         

@@ -27,6 +27,7 @@ def plot_laser(filename):
 
     headers, values=FileReader(filename).read_file()
     time_list=[]
+    print(values)
     first_stamp=values[0][-1]
     
     # assumes all rows have same entries
