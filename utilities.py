@@ -69,9 +69,12 @@ class FileReader:
                 row=[]                
                 
                 for val in values:
-                    if val=='':
+                    if val == '':
                         break
-                    row.append(float(val.strip()))
+                    try:
+                        row.append(float(val.strip()))
+                    except ValueError:
+                        row.append(0)
 
                 table.append(row)
         
