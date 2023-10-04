@@ -24,7 +24,7 @@ class Logger:
             vals_str = ""
 
             # TODO Part 5: Write the values from the list to the file
-            vals_str += str(values_list)
+            vals_str += str(values_list).replace("[", "").replace("]", "")
             vals_str += "\n"
             
             file.write(vals_str)
