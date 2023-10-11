@@ -87,7 +87,7 @@ def plot_laser(filename):
     plt.xlabel("X [m]")
     plt.ylabel("Y [m]")
 
-    plt.title("Initial Lidar Reading")
+    plt.title(f"{path_type} Initial Lidar Reading")
 
     plt.savefig(f"plots/{path_type.lower()}_lidar.png", transparent=True, bbox_inches='tight')
     
