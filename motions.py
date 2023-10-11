@@ -58,7 +58,7 @@ class motion_executioner(Node):
             os.mkdir("data")
         if not os.path.exists(dir):
             os.mkdir(dir)
-        self.imu_logger=Logger(f"{dir}/imu.csv", headers=["acc_x [m]", "acc_y [m]", "angular_z [rad]", "stamp"])
+        self.imu_logger=Logger(f"{dir}/imu.csv", headers=["acc_x [$m/s^2$]", "acc_y [$m/s^2$]", "angular_z [$rad/s^2$]", "stamp"])
         self.odom_logger=Logger(f"{dir}/odom.csv", headers=["x [m]","y [m]","th [rad]", "stamp"])
         self.laser_logger=Logger(f"{dir}/laser.csv", headers=["ranges [m]", "stamp"])
 

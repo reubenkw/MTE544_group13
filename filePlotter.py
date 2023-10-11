@@ -32,7 +32,7 @@ def plot_errors(filename: str):
 
     plt.figure()
     for i in plot_order:
-        plt.plot(time_list, [lin[i] for lin in values], label= f"{headers[i]} linear")
+        plt.plot(time_list, [lin[i] for lin in values], label= headers[i])
     
     plt.title(f"{path_type} {sensor} Data")
     plt.xlabel("Time [s]")
