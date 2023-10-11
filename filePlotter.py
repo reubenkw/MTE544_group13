@@ -11,7 +11,7 @@ import numpy as np
 def get_path_sensor_from_filename(fname: str) -> tuple[str, str]:
     # filename should be in format data/{path}/{sensor}
     # returns capitalized path and sensor names
-    filename_parts = filename.replace("/", "\\").replace(".csv", "").split("\\")
+    filename_parts = fname.replace("/", "\\").replace(".csv", "").split("\\")
     assert filename_parts[0] == "data" and len(filename_parts) == 3
     return filename_parts[1].capitalize(), filename_parts[2].capitalize()
 
@@ -22,11 +22,17 @@ def plot_errors(filename: str):
     time_list=[]
     first_stamp=values[0][-1]
     for val in values:
-        time_list.append(val[-1] - first_stamp)
+        # convert time from [ns] to [s]
+        time_list.append((val[-1] - first_stamp) * 1e-9)
+
+    plot_order = range(0, len(headers) - 1)
+    # required for all data to be visible
+    if path_type == "Line" and sensor == "Imu":
+        plot_order = [1, 0, 2]
 
     plt.figure()
-    for i in range(0, len(headers) - 1):
-        plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
+    for i in plot_order:
+        plt.plot(time_list, [lin[i] for lin in values], label= f"{headers[i]} linear")
     
     #plt.plot([lin[0] for lin in values], [lin[1] for lin in values])
     plt.title(f"{path_type} {sensor} Data")
@@ -48,7 +54,8 @@ def plot_laser(filename):
     
     # assumes all rows have same entries
     laser_data = np.array(values)[:, :-1]
-    times = np.array(values)[:, -1] - first_stamp
+    # convert times from [ns] to [s]
+    times = (np.array(values)[:, -1] - first_stamp) * 1e-9
     times_tiled = np.tile(times[np.newaxis].T, (laser_data.shape[1]))
 
     # angle between range measurements
@@ -66,14 +73,25 @@ def plot_laser(filename):
     ax.scatter(x.flatten(), y.flatten(), times_tiled.flatten(), marker="o")
     # ax.scatter(x[0], y[0], times_tiled[0], marker="o")
 
-    ax.set_title(f"{path_type} Laser Readings")
+    ax.set_title(f"{path_type} Lidar Readings")
+    ax.set_xlabel("X [m]")
+    ax.set_ylabel("Y [m]")
+    ax.set_zlabel("time [s]")
+    ax.set_box_aspect(aspect=None, zoom=0.8)
 
-    ax.set_xlabel("X")
-    ax.set_ylabel("Y")
-    ax.set_zlabel("time")
+    plt.savefig(f"plots/{path_type.lower()}_lidar_3d.png", transparent=True, bbox_inches='tight')
 
-    plt.savefig(f"plots/{path_type.lower()}_laser.png", transparent=True, bbox_inches='tight')
+    # 2d plotting
+    # slice of 3d plot at t=0
+    plt.figure()
+    plt.scatter(x[0], y[0])
 
+    plt.xlabel("X [m]")
+    plt.ylabel("Y [m]")
+
+    plt.title("Initial Lidar Reading")
+
+    plt.savefig(f"plots/{path_type.lower()}_lidar.png", transparent=True, bbox_inches='tight')
     
 
 import argparse

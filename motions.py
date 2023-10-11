@@ -57,9 +57,9 @@ class motion_executioner(Node):
             os.mkdir("data")
         if not os.path.exists(dir):
             os.mkdir(dir)
-        self.imu_logger=Logger(f"{dir}/imu.csv", headers=["acc_x", "acc_y", "angular_z", "stamp"])
-        self.odom_logger=Logger(f"{dir}/odom.csv", headers=["x","y","th", "stamp"])
-        self.laser_logger=Logger(f"{dir}/laser.csv", headers=["ranges", "stamp"])
+        self.imu_logger=Logger(f"{dir}/imu.csv", headers=["acc_x [m]", "acc_y [m]", "angular_z [rad]", "stamp"])
+        self.odom_logger=Logger(f"{dir}/odom.csv", headers=["x [m]","y [m]","th [rad]", "stamp"])
+        self.laser_logger=Logger(f"{dir}/laser.csv", headers=["ranges [m]", "stamp"])
 
         # TODO Part 3: Create the QoS profile by setting the proper parameters in (...)
         """
@@ -68,7 +68,6 @@ class motion_executioner(Node):
         History (Depth): UNKNOWN
         Durability: VOLATILE
         """
-
         qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
 
         # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
