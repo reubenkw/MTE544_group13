@@ -2,31 +2,47 @@
 # Currently supports LiDAR, IMU, and Odometry logging
 # Inputs file paths using command line argument --files
 
+import os
+
 import matplotlib.pyplot as plt
 from utilities import FileReader
 import numpy as np
 
-def plot_errors(filename):
+def get_path_sensor_from_filename(fname: str) -> tuple[str, str]:
+    # filename should be in format data/{path}/{sensor}
+    # returns capitalized path and sensor names
+    filename_parts = filename.replace("/", "\\").replace(".csv", "").split("\\")
+    assert filename_parts[0] == "data" and len(filename_parts) == 3
+    return filename_parts[1].capitalize(), filename_parts[2].capitalize()
+
+def plot_errors(filename: str):
+    path_type, sensor = get_path_sensor_from_filename(filename)
     
     headers, values=FileReader(filename).read_file() 
     time_list=[]
     first_stamp=values[0][-1]
-    print(len(headers))
     for val in values:
         time_list.append(val[-1] - first_stamp)
 
+    plt.figure()
     for i in range(0, len(headers) - 1):
         plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
     
+    plt.title(f"{path_type} {sensor} Data")
+    plt.xlabel("Time [s]")
+    plt.ylabel(f"{sensor} Reading")
     plt.legend()
     plt.grid()
-    plt.show()
+
+    plt.savefig(f"plots/{path_type.lower()}_{sensor.lower()}.png", transparent=True, bbox_inches='tight')
+
 
 def plot_laser(filename):
+    path_type, _ = get_path_sensor_from_filename(filename)
 
-    headers, values=FileReader(filename).read_file()
-    time_list=[]
-    print(values)
+    _, values=FileReader(filename).read_file()
+    # headers assumed to be (ranges, stamp, ) 
+    # which doesn't fit the data but matches the file reader format
     first_stamp=values[0][-1]
     
     # assumes all rows have same entries
@@ -46,14 +62,16 @@ def plot_laser(filename):
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
 
-
     ax.scatter(x.flatten(), y.flatten(), times_tiled.flatten(), marker="o")
+
+    ax.set_title(f"{path_type} Laser Readings")
 
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
     ax.set_zlabel("time")
 
-    plt.show()
+    plt.savefig(f"plots/{path_type.lower()}_laser.png", transparent=True, bbox_inches='tight')
+
     
 
 import argparse
@@ -61,16 +79,23 @@ import argparse
 if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description='Process some files.')
-    parser.add_argument('--files', nargs='+', required=True, help='List of files to process')
+    parser.add_argument('--files', nargs='+', required=False, help='List of files to process. If not given, searches \\data dir.')
     
     args = parser.parse_args()
     
+    filenames=args.files
+    if not filenames:
+        # if files not given, search data folder for csv files
+        print("No files given. Searching data dir.")
+        filenames = [os.path.join(dp, f) for dp, dn, filenames in os.walk("data") for f in filenames if os.path.splitext(f)[1] == '.csv']
+
     print("plotting the files", args.files)
 
-    filenames=args.files
     for filename in filenames:
         filenames: str
         if filename.endswith("laser.csv"):
             plot_laser(filename)
         else:
             plot_errors(filename)
+
+    print("Done.")
