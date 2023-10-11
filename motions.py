@@ -64,7 +64,7 @@ class motion_executioner(Node):
 
         """
         QoS profile:
-        Reliability: RELIABLE
+        Reliability: BEST_EFFORT
         History (Depth): UNKNOWN
         Durability: VOLATILE
         """
