@@ -65,7 +65,7 @@ class motion_executioner(Node):
         """
         QoS profile:
         Reliability: BEST_EFFORT
-        History (Depth): UNKNOWN
+        History (Depth): 10
         Durability: VOLATILE
         """
         qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
