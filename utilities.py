@@ -1,8 +1,12 @@
-from math import atan2, asin, sqrt
+from math import atan2, asin
 
 M_PI=3.1415926535
 
 class Logger:
+    """
+    Used for logging sensor data
+    """
+
     def __init__(self, filename, headers=["e", "e_dot", "e_int", "stamp"]):
         self.filename = filename
 
@@ -22,8 +26,6 @@ class Logger:
 
         with open(self.filename, 'a') as file:
             vals_str = ""
-
-            # TODO Part 5: Write the values from the list to the file
             vals_str += str(values_list).replace("[", "").replace("]", "")
             vals_str += "\n"
             
@@ -34,6 +36,9 @@ class Logger:
         pass
 
 class FileReader:
+    """
+    Extracts data from CSV files into lists
+    """
     def __init__(self, filename):
         
         self.filename = filename
@@ -78,13 +83,12 @@ class FileReader:
         return headers, table
 
 
-# TODO Part 5: Implement the conversion from Quaternion to Euler Angles
 def euler_from_quaternion(quat):
     """
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
-    # pitch and roll should be confirmed
+    # TODO: pitch and roll should be confirmed
     x, y, z, w = quat.x, quat.y, quat.z, quat.w
     yaw = atan2(2 * (w * z + x * y), 1 - 2 * (y ** 2 + z ** 2))
     pitch = atan2(2 * (w * x + y * z), 1 - 2 * (x ** 2 + y ** 2))

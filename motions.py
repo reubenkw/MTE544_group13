@@ -1,4 +1,11 @@
-# Imports
+"""
+Use this file to set robot on one of three predetermined patterns of motion:
+    - line
+    - circle (default)
+    - spiral
+Input using the command line argument --motion
+"""
+
 import os
 
 import numpy as np
@@ -9,10 +16,6 @@ from rclpy.node import Node
 from utilities import Logger, euler_from_quaternion
 from rclpy.qos import QoSProfile
 
-# TODO Part 3: Import message types needed: 
-    # For sending velocity commands to the robot: Twist
-    # For the sensors: Imu, LaserScan, and Odometry
-# Check the online documentation to fill in the lines below
 from geometry_msgs.msg import Twist
 from sensor_msgs.msg import Imu
 from sensor_msgs.msg import LaserScan
@@ -20,7 +23,6 @@ from nav_msgs.msg import Odometry
 
 from rclpy.time import Time
 
-# You may add any other imports you may need/want to use below
 from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
 
 
@@ -42,13 +44,12 @@ class motion_executioner(Node):
         self.odom_initialized=False
         self.laser_initialized=False
         
-        # for spiral twist (decreasing rad clockwise)
+        # for spiral twist (increasing rad clockwise)
         self.spiral_max = 0.0
         self.spiral_incr = 0.02
-        # start with no turn
-        self.ang_z = -5.0
+        self.ang_z = -5.0  # initial turning angle
 
-        # TODO Part 3: Create a publisher to send velocity commands by setting the proper parameters in (...)
+        # velocity publisher
         self.vel_publisher=self.create_publisher(Twist, "/cmd_vel", 10)
                 
         # loggers
@@ -61,17 +62,14 @@ class motion_executioner(Node):
         self.odom_logger=Logger(f"{dir}/odom.csv", headers=["x","y","th", "stamp"])
         self.laser_logger=Logger(f"{dir}/laser.csv", headers=["ranges", "stamp"])
 
-        # TODO Part 3: Create the QoS profile by setting the proper parameters in (...)
         """
         QoS profile:
         Reliability: RELIABLE
         History (Depth): UNKNOWN
         Durability: VOLATILE
         """
-
         qos = QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
 
-        # TODO Part 5: Create below the subscription to the topics corresponding to the respective sensors
         # IMU subscription /imu
         self.imu_subscription = self.create_subscription(Imu, "/imu", self.imu_callback, qos_profile=qos)
         self.imu_initialized = True
@@ -89,8 +87,8 @@ class motion_executioner(Node):
         self.successful_init = True
 
 
-    # TODO Part 5: Callback functions: complete the callback functions of the three sensors to log the proper data.
-    # You can save the needed fields into a list, and pass the list to the log_values function in utilities.py
+    # sensor callback functions
+    # saves the needed fields into a list, and passes the list to the log_values function in utilities.py
 
     def imu_callback(self, imu_msg: Imu):
         # log imu msgs
@@ -166,7 +164,7 @@ class motion_executioner(Node):
         # twist msg for spiral motion
         # increasing rad clockwise
         if self.ang_z < self.spiral_max:
-            # ang will be more negative each step
+            # turning angle reduces in magnitude (-ve + +ve)
             self.ang_z += self.spiral_incr
         
         msg=Twist()
@@ -175,7 +173,6 @@ class motion_executioner(Node):
         return msg
     
     def make_acc_line_twist(self):
-        # accelerate line twist??
         # twist msg for line motion
         msg=Twist()
         msg.linear.x = 0.1

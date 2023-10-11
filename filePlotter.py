@@ -1,6 +1,6 @@
-# You can use this file to plot the loged sensor data
-# Note that you need to modify/adapt it to your own files
-# Feel free to make any modifications/additions here
+# You can use this file to plot the logged sensor data
+# Currently supports LiDAR, IMU, and Odometry logging
+# Inputs file paths using command line argument --files
 
 import matplotlib.pyplot as plt
 from utilities import FileReader
@@ -18,7 +18,6 @@ def plot_errors(filename):
     for i in range(0, len(headers) - 1):
         plt.plot(time_list, [lin[i] for lin in values], label= headers[i]+ " linear")
     
-    #plt.plot([lin[0] for lin in values], [lin[1] for lin in values])
     plt.legend()
     plt.grid()
     plt.show()
@@ -49,7 +48,6 @@ def plot_laser(filename):
 
 
     ax.scatter(x.flatten(), y.flatten(), times_tiled.flatten(), marker="o")
-    # ax.scatter(x[0], y[0], times_tiled[0], marker="o")
 
     ax.set_xlabel("X")
     ax.set_ylabel("Y")
