@@ -69,8 +69,8 @@ def plot_laser(filename):
     angles = np.arange(stop=2 * np.pi, step=angle)
 
     # data starts at front of robot (positive x)
-    x: np.ndarray = laser_data * np.cos(angles)
-    y: np.ndarray = laser_data * np.sin(angles)
+    x: np.ndarray = laser_data * np.sin(angles)
+    y: np.ndarray = laser_data * np.cos(angles)
 
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
@@ -96,6 +96,7 @@ def plot_laser(filename):
     plt.ylabel("Y [m]")
 
     plt.title(f"{path_type} Initial Lidar Reading")
+    plt.gca().set_aspect('equal')
 
     plt.savefig(
         f"plots/{path_type.lower()}_lidar.png", transparent=True, bbox_inches="tight"
@@ -126,7 +127,7 @@ if __name__ == "__main__":
             if os.path.splitext(f)[1] == ".csv"
         ]
 
-    print("plotting the files", args.files)
+    print("plotting the files", filenames)
 
     for filename in filenames:
         filenames: str
