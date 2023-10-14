@@ -68,9 +68,9 @@ def plot_laser(filename):
 
     angles = np.arange(stop=2 * np.pi, step=angle)
 
-    # data starts at front of robot (positive x)
-    x: np.ndarray = laser_data * np.sin(angles)
-    y: np.ndarray = laser_data * np.cos(angles)
+    # data starts at front of robot (positive y)
+    x: np.ndarray = laser_data * np.cos(angles)
+    y: np.ndarray = laser_data * np.sin(angles)
 
     fig = plt.figure()
     ax = fig.add_subplot(projection="3d")
