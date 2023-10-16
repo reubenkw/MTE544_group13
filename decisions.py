@@ -19,8 +19,8 @@ from planner import TRAJECTORY_PLANNER, POINT_PLANNER, planner
 from controller import controller, trajectoryController
 
 # You may add any other imports you may need/want to use below
-# import ...
 
+from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
 
 class decision_maker(Node):
     
@@ -29,8 +29,8 @@ class decision_maker(Node):
         super().__init__("decision_maker")
 
         #TODO Part 4: Create a publisher for the topic responsible for robot's motion
-        self.publisher=... 
-
+        self.publisher=self.create_publisher(publisher_msg, publishing_topic, qos_publisher)
+ 
         publishing_period=1/rate
         
         # Instantiate the controller
@@ -85,7 +85,7 @@ class decision_maker(Node):
             self.controller.PID_linear.logger.save_log()
             
             #TODO Part 3: exit the spin
-            ... 
+            raise SystemExit()
         
         velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
 
