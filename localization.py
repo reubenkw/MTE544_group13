@@ -9,10 +9,12 @@ from nav_msgs.msg import Odometry as odom
 
 from rclpy import init, spin
 
+ROBOT_SIM = "turtlebot3_burger"
+
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor):
+    def __init__(self, localizationType=rawSensor, robot_name=ROBOT_SIM):
 
         super().__init__("localizer")
         
@@ -25,6 +27,7 @@ class localization(Node):
         History (Depth): 10
         Durability: VOLATILE
         """
+        # Later -- need to self identify if real or simulation robot 
 
         odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
         
@@ -34,6 +37,7 @@ class localization(Node):
         if localizationType == rawSensor:
             # TODO Part 3: subscribe to the position sensor topic (Odometry)
             self.odom_subscription = self.create_subscription(odom,"/odom",self.odom_callback, qos_profile=odom_qos)
+            self.odom_initialized = True
         else:
             print("This type doesn't exist", sys.stderr)
     

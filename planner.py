@@ -25,7 +25,7 @@ class planner:
         return x, y, theta
 
     # TODO Part 6: Implement the trajectories here
-    def trajectory_planner(self):
+    def trajectory_planner(self) -> list[tuple[int, int, int]]:
         pass
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
         # return 

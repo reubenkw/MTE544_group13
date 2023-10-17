@@ -89,7 +89,11 @@ def euler_from_quaternion(quat):
     Convert quaternion (w in last place) to euler roll, pitch, yaw.
     quat = [x, y, z, w]
     """
-
+    x, y, z, w = quat.x, quat.y, quat.z, quat.w
+    yaw = atan2(2 * (w * z + x * y), 1 - 2 * (y**2 + z**2))
+    pitch = atan2(2 * (w * x + y * z), 1 - 2 * (x**2 + y**2))
+    roll = asin(2 * (w * y - x * z))
+    
     # just unpack yaw
     return yaw
 
@@ -121,6 +125,6 @@ def calculate_angular_error(current_pose, goal_pose):
     # Remember to handle the cases where the angular error might exceed the range [-π, π]
 
     # want error between -pi and pi for shortest turning
-    error_angular = (theta_des - theta_crnt + pi) % 2 * pi - pi
+    error_angular = (theta_des - theta_crnt + pi) % (2 * pi) - pi
     
     return error_angular
