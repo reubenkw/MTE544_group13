@@ -57,8 +57,11 @@ class decision_maker(Node):
         self.localizer=localization(rawSensor)
 
         # Instantiate the planner
-        # NOTE: goalPoint is used only for the pointPlanner
-        self.goal=self.planner.plan(goalPoint)
+        # NOTE: goalPoint is used only for the pointPlanner, initial position is only used for traj
+        spin_once(self.localizer)
+        pose_init = self.localizer.getPose()
+        print(f"initial pose = {pose_init}")
+        self.goal=self.planner.plan(goalPoint=goalPoint, pose_init=pose_init)
 
         self.create_timer(publishing_period, self.timerCallback)
 
@@ -95,9 +98,9 @@ class decision_maker(Node):
             #TODO Part 3: exit the spin
             raise SystemExit()
         
-        print(crnt_pose[:3])
+        # print(crnt_pose[:3])
         velocity, yaw_rate = self.controller.vel_request(crnt_pose, self.goal, True)
-        print(velocity, yaw_rate)
+        # print(velocity, yaw_rate)
 
 
         #TODO Part 4: Publish the velocity to move the robot

@@ -1,5 +1,6 @@
 from typing import List
 from math import exp
+import numpy as np
 
 # Type of planner
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
@@ -12,13 +13,13 @@ class planner:
         self.type=type_
 
     
-    def plan(self, goalPoint=[-1.0, -1.0, 0.0]):
+    def plan(self, goalPoint=[-1.0, -1.0, 0.0], pose_init=[0,0]):
         
         if self.type==POINT_PLANNER:
             return self.point_planner(goalPoint)
         
         elif self.type==TRAJECTORY_PLANNER:
-            return self.trajectory_planner()
+            return self.trajectory_planner(pose_init)
 
 
     def point_planner(self, goalPoint):
@@ -28,25 +29,27 @@ class planner:
         return x, y, theta
 
     # TODO Part 6: Implement the trajectories here
-    def trajectory_planner(self) -> List[tuple[float, float]]:
-        FUNCTION = "POLYNOMIAL"  # options: POLYNOMIAL, EXPONENTIAL
-        STEP_SIZE: float = 0.05
-        FINAL_X: float = 2
+    def trajectory_planner(self, pose_init) -> List[tuple[float, float]]:
+        x0 = pose_init[0]
+        y0 = pose_init[1]
+        FUNCTION = "EXPONENTIAL"  # options: POLYNOMIAL, EXPONENTIAL
 
-        trajectory: List[tuple[float, float]] = []
-        x = 0
+        xs = np.arange(start=-1, stop=2, step=0.1)
+        if FUNCTION == "POLYNOMIAL":
+            f = lambda x: x ** 2
+        elif FUNCTION == "EXPONENTIAL":
+            f = lambda x: 1 / (1+exp(-10*x))
 
-        while x <= FINAL_X:
-            if FUNCTION == "POLYNOMIAL":
-                trajectory.append((x, x ** 2))
-            elif FUNCTION == "EXPONENTIAL":
-                trajectory.append((x, 1/(1+exp(-x))))
-            x += STEP_SIZE
+        fvec = np.vectorize(f)
 
-        print(trajectory)
+        ys = fvec(xs)
+
+        # make it relative to starting point
+        xs += x0 - xs[0]
+        ys += y0 - ys[0]
+
+        # print(list(map(tuple, np.vstack((xs, ys)).T)))
 
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
-        # return
-
-        return trajectory
+        return list(map(tuple, np.vstack((xs, ys)).T))
 
