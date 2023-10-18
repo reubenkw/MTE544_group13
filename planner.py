@@ -1,3 +1,6 @@
+from typing import List
+from math import exp
+
 # Type of planner
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
@@ -25,8 +28,23 @@ class planner:
         return x, y, theta
 
     # TODO Part 6: Implement the trajectories here
-    def trajectory_planner(self) -> list[tuple[int, int, int]]:
-        pass
+    def trajectory_planner(self) -> List[List[float, float]]:
+        FUNCTION = "POLYNOMIAL"  # options: POLYNOMIAL, EXPONENTIAL
+        STEP_SIZE: float = 0.05
+        FINAL_X: float = 2
+
+        trajectory: List[List[float, float]] = []
+        x = 0
+
+        while x <= FINAL_X:
+            x += STEP_SIZE
+            if FUNCTION == "POLYNOMIAL":
+                trajectory.append([x, x^2])
+            elif FUNCTION == "EXPONENTIAL":
+                trajectory.append([x, 1/(1+exp(-x))])
+
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
-        # return 
+        # return
+
+        return trajectory
 

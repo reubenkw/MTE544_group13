@@ -3,20 +3,36 @@ import numpy as np
 
 from pid import PID_ctrl
 from utilities import euler_from_quaternion, calculate_angular_error, calculate_linear_error
+from numpy import sign
 
 M_PI=3.1415926535
 
 P=0; PD=1; PI=2; PID=3
 
+# turtlebot 3 burger specs
+SIM_LINEAR_VEL_TH = 0.22 # [m/s]
+SIM_ANGULAR_VEL_TH = 2.84 # [rad/s]
+
+# turtlebot 4 specs in safe mode
+REAL_LINEAR_VEL_TH = 0.31 # [m/s]
+REAL_ANGULAR_VEL_TH = 1.90 # [rad/s]
+
 class controller:
     
     
     # Default gains of the controller for linear and angular motions
-    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2):
+    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, is_sim=False):
         
         # TODO Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
         self.PID_linear=PID_ctrl(PID, klp, klv, kli, filename_="linear.csv")
         self.PID_angular=PID_ctrl(PID, kap, kav, kai, filename_="angular.csv")
+
+        if is_sim:
+            self.linear_vel_th = SIM_LINEAR_VEL_TH
+            self.angular_vel_th = SIM_ANGULAR_VEL_TH
+        else:
+            self.linear_vel_th = REAL_LINEAR_VEL_TH
+            self.angular_vel_th = REAL_ANGULAR_VEL_TH
 
     
     def vel_request(self, pose, goal, status):
@@ -29,17 +45,17 @@ class controller:
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status)
         
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
-        linear_vel = ... if linear_vel > 1.0 else linear_vel
-        angular_vel= ... if angular_vel > 1.0 else angular_vel
+        linear_vel = sign(linear_vel) * self.linear_vel_th if abs(linear_vel) > self.linear_vel_th else linear_vel
+        angular_vel = sign(angular_vel) * self.angular_vel_th if abs(angular_vel) > self.angular_vel_th else angular_vel
         
         return linear_vel, angular_vel
     
 
 class trajectoryController(controller):
 
-    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, lookAhead=1.0):
+    def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, lookAhead=1.0, is_sim=False):
         
-        super().__init__(klp, klv, kli, kap, kav, kai)
+        super().__init__(klp, klv, kli, kap, kav, kai, is_sim)
         self.lookAhead=lookAhead
     
     def vel_request(self, pose, listGoals, status):
@@ -56,8 +72,8 @@ class trajectoryController(controller):
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status) 
 
         # TODO Part 4: Add saturation limits for the robot linear and angular velocity
-        linear_vel = ... if linear_vel > ... else linear_vel
-        angular_vel= ... if angular_vel > ... else angular_vel
+        linear_vel = sign(linear_vel) * self.linear_vel_th if abs(linear_vel) > self.linear_vel_th else linear_vel
+        angular_vel = sign(angular_vel) * self.angular_vel_th if abs(angular_vel) > self.angular_vel_th else angular_vel
         
         return linear_vel, angular_vel
 

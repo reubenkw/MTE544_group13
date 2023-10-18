@@ -27,8 +27,6 @@ class localization(Node):
         History (Depth): 10
         Durability: VOLATILE
         """
-        # Later -- need to self identify if real or simulation robot 
-
         odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
         
         self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])

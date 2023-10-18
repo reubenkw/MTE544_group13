@@ -3,7 +3,7 @@
 
 import sys
 
-from utilities import euler_from_quaternion, calculate_angular_error, calculate_linear_error, is_sim
+from utilities import euler_from_quaternion, calculate_angular_error, calculate_linear_error
 from pid import PID_ctrl
 
 from rclpy import init, spin, spin_once
@@ -23,9 +23,10 @@ from controller import controller, trajectoryController
 from rclpy.qos import ReliabilityPolicy, DurabilityPolicy
 from math import pi
 
+
 class decision_maker(Node):
     
-    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint=None, rate=10, motion_type=POINT_PLANNER):
+    def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint=None, rate=10, motion_type=POINT_PLANNER, is_sim=False):
 
         super().__init__("decision_maker")
         self.th_linear = 0.1    # [m]
@@ -40,12 +41,12 @@ class decision_maker(Node):
         # TODO Part 5: Tune your parameters here
     
         if motion_type == POINT_PLANNER:
-            self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6)
+            self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6, is_sim=is_sim)
             self.planner=planner(POINT_PLANNER)    
     
     
         elif motion_type==TRAJECTORY_PLANNER:
-            self.controller=trajectoryController(klp=0.2, klv=0.5, kap=0.8, kav=0.6)
+            self.controller=trajectoryController(klp=0.2, klv=0.5, kap=0.8, kav=0.6, is_sim=is_sim)
             self.planner=planner(TRAJECTORY_PLANNER)
 
         else:
@@ -65,8 +66,7 @@ class decision_maker(Node):
     def timerCallback(self):
         
         # TODO Part 3: Run the localization node
-        # may not need to explicitly create the node since already running in the decision_maker
-        self.localizer.spin()   # Remember that this file is already running the decision_maker node.
+        self.localizer.spin_once()   # Remember that this file is already running the decision_maker node.
 
         if self.localizer.getPose()  is  None:
             print("waiting for odom msgs ....")
@@ -76,13 +76,14 @@ class decision_maker(Node):
         
         # TODO Part 3: Check if you reached the goal
         # Check by comparing actual and threhshold angular and linear error
-        end_goal = self.goal
-        if isinstance(self.goal, list): 
-            end_goal = self.goal[-1]
-            
-        # must meet angular and linear thresholds
+        
         crnt_pose = self.localizer.getPose()
-        reached_goal = calculate_linear_error(crnt_pose, end_goal) < self.th_linear and abs(calculate_angular_error(crnt_pose, end_goal)) < self.th_angular
+        if isinstance(self.goal, list): 
+            # no angular threshold for trajectory
+            reached_goal = calculate_linear_error(crnt_pose, self.goal[-1]) < self.th_linear
+        else:
+            # must meet angular and linear thresholds
+            reached_goal = calculate_linear_error(crnt_pose, self.goal) < self.th_linear and abs(calculate_angular_error(crnt_pose, end_goal)) < self.th_angular
         
         if reached_goal:
             print("reached goal")
@@ -119,17 +120,16 @@ def main(args=None):
     History (Depth): 10
     Durability: VOLATILE
     """
-    # Later -- need to self identify if real or simulation robot
     odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, history=1, depth=10)
     
 
     # TODO Part 3: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
         # uses arbitrary point
-        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, goalPoint=, rate=10, motion_type=POINT_PLANNER)
+        goalPoint=[-1.0, -1.0, 0.0]
+        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, goalPoint, rate=10, motion_type=POINT_PLANNER, is_sim=args.is_sim)
     elif args.motion.lower() == "trajectory":
-        traj_planner = planner(TRAJECTORY_PLANNER).plan()
-        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, traj_planner, rate=10, motion_type=TRAJECTORY_PLANNER)
+        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, rate=10, motion_type=TRAJECTORY_PLANNER, is_sim=args.is_sim)
     else:
         print("invalid motion type", file=sys.stderr)        
     
