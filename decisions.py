@@ -41,7 +41,7 @@ class decision_maker(Node):
         # TODO Part 5: Tune your parameters here
     
         if motion_type == POINT_PLANNER:
-            self.controller=controller(klp=0.2, klv=0.5, kap=0.8, kav=0.6, is_sim=is_sim)
+            self.controller=controller(klp=0.8, klv=0.5, kap=0.8, kav=0.6, is_sim=is_sim)
             self.planner=planner(POINT_PLANNER)    
     
     
@@ -83,7 +83,7 @@ class decision_maker(Node):
             reached_goal = calculate_linear_error(crnt_pose, self.goal[-1]) < self.th_linear
         else:
             # must meet angular and linear thresholds
-            reached_goal = calculate_linear_error(crnt_pose, self.goal) < self.th_linear and abs(calculate_angular_error(crnt_pose, end_goal)) < self.th_angular
+            reached_goal = calculate_linear_error(crnt_pose, self.goal) < self.th_linear
         
         if reached_goal:
             print("reached goal")
@@ -95,7 +95,10 @@ class decision_maker(Node):
             #TODO Part 3: exit the spin
             raise SystemExit()
         
+        print(crnt_pose[:3])
         velocity, yaw_rate = self.controller.vel_request(crnt_pose, self.goal, True)
+        print(velocity, yaw_rate)
+
 
         #TODO Part 4: Publish the velocity to move the robot
         twist = Twist()
@@ -126,7 +129,7 @@ def main(args=None):
     # TODO Part 3: instantiate the decision_maker with the proper parameters for moving the robot
     if args.motion.lower() == "point":
         # uses arbitrary point
-        goalPoint=[-1.0, -1.0, 0.0]
+        goalPoint=[1.0, 1.0, 0.0]
         DM=decision_maker(Twist, "/cmd_vel", odom_qos, goalPoint, rate=10, motion_type=POINT_PLANNER, is_sim=args.is_sim)
     elif args.motion.lower() == "trajectory":
         DM=decision_maker(Twist, "/cmd_vel", odom_qos, rate=10, motion_type=TRAJECTORY_PLANNER, is_sim=args.is_sim)

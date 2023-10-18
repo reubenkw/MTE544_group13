@@ -37,11 +37,13 @@ class planner:
         x = 0
 
         while x <= FINAL_X:
-            x += STEP_SIZE
             if FUNCTION == "POLYNOMIAL":
-                trajectory.append((x, x^2))
+                trajectory.append((x, x ** 2))
             elif FUNCTION == "EXPONENTIAL":
                 trajectory.append((x, 1/(1+exp(-x))))
+            x += STEP_SIZE
+
+        print(trajectory)
 
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
         # return

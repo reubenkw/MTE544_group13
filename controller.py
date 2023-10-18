@@ -24,8 +24,8 @@ class controller:
     def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, is_sim=False):
         
         # TODO Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
-        self.PID_linear=PID_ctrl(PID, klp, klv, kli, filename_="linear.csv")
-        self.PID_angular=PID_ctrl(PID, kap, kav, kai, filename_="angular.csv")
+        self.PID_linear=PID_ctrl(PID, klp, klv, kli, filename_="data/linear.csv")
+        self.PID_angular=PID_ctrl(PID, kap, kav, kai, filename_="data/angular.csv")
 
         if is_sim:
             self.linear_vel_th = SIM_LINEAR_VEL_TH
@@ -40,6 +40,7 @@ class controller:
         e_lin=calculate_linear_error(pose, goal)
         e_ang=calculate_angular_error(pose, goal)
 
+        print(f"erorr: {e_lin}, {e_ang}")
 
         linear_vel=self.PID_linear.update([e_lin, pose[3]], status)
         angular_vel=self.PID_angular.update([e_ang, pose[3]], status)

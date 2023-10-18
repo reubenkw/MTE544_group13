@@ -27,7 +27,7 @@ class localization(Node):
         """
         odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
         
-        self.loc_logger=Logger("robot_pose.csv", ["x", "y", "theta", "stamp"])
+        self.loc_logger=Logger("data/robot_pose.csv", ["x", "y", "theta", "stamp"])
         self.pose=None
         
         if localizationType == rawSensor:
@@ -46,7 +46,7 @@ class localization(Node):
         self.pose=[pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, th, pose_msg.header.stamp]
         
         # Log the data
-        time_ns = Time.from_msg(pose_msg.header.stamp)
+        time_ns = Time.from_msg(pose_msg.header.stamp).nanoseconds
         self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], time_ns])
     
     def getPose(self):
