@@ -9,12 +9,10 @@ from nav_msgs.msg import Odometry as odom
 
 from rclpy import init, spin
 
-ROBOT_SIM = "turtlebot3_burger"
-
 rawSensor = 0
 class localization(Node):
     
-    def __init__(self, localizationType=rawSensor, robot_name=ROBOT_SIM):
+    def __init__(self, localizationType=rawSensor):
 
         super().__init__("localizer")
         
@@ -40,16 +38,16 @@ class localization(Node):
             print("This type doesn't exist", sys.stderr)
     
     
-    def odom_callback(self, pose_msg):
+    def odom_callback(self, pose_msg: odom):
         
         # TODO Part 3: Read x,y, theta, and record the stamp
         th = euler_from_quaternion(pose_msg.pose.pose.orientation)
-        time = pose_msg.header.stamp.sec * 1e9 + pose_msg.header.stamp.nanosec
 
-        self.pose=[pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, th, time]
+        self.pose=[pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, th, pose_msg.header.stamp]
         
         # Log the data
-        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], time])
+        time_ns = Time.from_msg(pose_msg.header.stamp)
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], time_ns])
     
     def getPose(self):
         return self.pose

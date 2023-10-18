@@ -95,7 +95,7 @@ class decision_maker(Node):
             #TODO Part 3: exit the spin
             raise SystemExit()
         
-        velocity, yaw_rate = self.controller.vel_request(self.localizer.getPose(), self.goal, True)
+        velocity, yaw_rate = self.controller.vel_request(crnt_pose, self.goal, True)
 
         #TODO Part 4: Publish the velocity to move the robot
         twist = Twist()

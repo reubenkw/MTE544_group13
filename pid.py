@@ -36,6 +36,8 @@ class PID_ctrl:
 
         
     def __update(self, stamped_error):
+        print("test2")
+        print(stamped_error)
         
         latest_error=stamped_error[0]
         stamp=stamped_error[1]
@@ -77,7 +79,7 @@ class PID_ctrl:
         for hist in self.history:
             # TODO Part 5: Gather the integration
             # sum_+=...
-            sum += hist[0]
+            sum_ += hist[0]
         
         error_int=sum_*dt_avg
         
