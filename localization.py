@@ -44,11 +44,12 @@ class localization(Node):
         
         # TODO Part 3: Read x,y, theta, and record the stamp
         th = euler_from_quaternion(pose_msg.pose.pose.orientation)
+        time = pose_msg.header.stamp.sec * 1e9 + pose_msg.header.stamp.nanosec
 
-        self.pose=[pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, th]
+        self.pose=[pose_msg.pose.pose.position.x, pose_msg.pose.pose.position.y, th, time]
         
         # Log the data
-        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], time])
     
     def getPose(self):
         return self.pose

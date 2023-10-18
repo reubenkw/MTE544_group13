@@ -66,7 +66,7 @@ class decision_maker(Node):
     def timerCallback(self):
         
         # TODO Part 3: Run the localization node
-        self.localizer.spin_once()   # Remember that this file is already running the decision_maker node.
+        spin_once(self.localizer)   # Remember that this file is already running the decision_maker node.
 
         if self.localizer.getPose()  is  None:
             print("waiting for odom msgs ....")
@@ -127,9 +127,9 @@ def main(args=None):
     if args.motion.lower() == "point":
         # uses arbitrary point
         goalPoint=[-1.0, -1.0, 0.0]
-        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, goalPoint, rate=10, motion_type=POINT_PLANNER, is_sim=args.is_sim)
+        DM=decision_maker(Twist, "/cmd_vel", odom_qos, goalPoint, rate=10, motion_type=POINT_PLANNER, is_sim=args.is_sim)
     elif args.motion.lower() == "trajectory":
-        DM=decision_maker(Twist(), "/cmd_vel", odom_qos, rate=10, motion_type=TRAJECTORY_PLANNER, is_sim=args.is_sim)
+        DM=decision_maker(Twist, "/cmd_vel", odom_qos, rate=10, motion_type=TRAJECTORY_PLANNER, is_sim=args.is_sim)
     else:
         print("invalid motion type", file=sys.stderr)        
     
@@ -145,7 +145,7 @@ if __name__=="__main__":
 
     argParser=argparse.ArgumentParser(description="point or trajectory") 
     argParser.add_argument("--motion", type=str, default="point")
-    argParser.add_argument("--sim", type=bool, default=False)
+    argParser.add_argument("--sim", dest="is_sim", default=False, action='store_true')
     args = argParser.parse_args()
 
     main(args)
