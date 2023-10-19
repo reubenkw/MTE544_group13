@@ -25,7 +25,7 @@ class localization(Node):
         History (Depth): 10
         Durability: VOLATILE
         """
-        odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, depth=10)
+        odom_qos=QoSProfile(reliability=ReliabilityPolicy.BEST_EFFORT, durability=DurabilityPolicy.VOLATILE, depth=10)
         
         self.loc_logger=Logger("data/robot_pose.csv", ["x", "y", "theta", "stamp"])
         self.pose=None

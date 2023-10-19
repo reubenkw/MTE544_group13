@@ -29,8 +29,7 @@ class decision_maker(Node):
     def __init__(self, publisher_msg, publishing_topic, qos_publisher, goalPoint=None, rate=10, motion_type=POINT_PLANNER, is_sim=False):
 
         super().__init__("decision_maker")
-        self.th_linear = 0.1    # [m]
-        self.th_angular = 0.1   # [rad]
+        self.th_linear = 0.05    # [m]
 
         #TODO Part 4: Create a publisher for the topic responsible for robot's motion
         self.publisher=self.create_publisher(publisher_msg, publishing_topic, qos_publisher)
@@ -42,7 +41,7 @@ class decision_maker(Node):
     
         if motion_type == POINT_PLANNER:
             self.controller=controller(klp=0.8, klv=0.5, kap=0.8, kav=0.6, is_sim=is_sim)
-            self.planner=planner(POINT_PLANNER)    
+            self.planner=planner(POINT_PLANNER)
     
     
         elif motion_type==TRAJECTORY_PLANNER:
@@ -122,11 +121,12 @@ def main(args=None):
     
     """
     QoS profile:
-    Reliability: RELIABLE - remember to change it to BEST_EFFORT in turtlebot4
+    Reliability: RELIABLE - remember to change it to BEST_EFFORT in turtlebot4 (real robot)
     History (Depth): 10
     Durability: VOLATILE
     """
-    odom_qos=QoSProfile(reliability=ReliabilityPolicy.RELIABLE, durability=DurabilityPolicy.VOLATILE, history=1, depth=10)
+    qos_reliability = ReliabilityPolicy.RELIABLE if args.is_sim else ReliabilityPolicy.BEST_EFFORT
+    odom_qos=QoSProfile(reliability=qos_reliability, durability=DurabilityPolicy.VOLATILE, history=1, depth=10)
     
 
     # TODO Part 3: instantiate the decision_maker with the proper parameters for moving the robot
