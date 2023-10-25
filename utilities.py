@@ -4,7 +4,7 @@ M_PI=3.1415926535
 
 class Logger:
     
-    def __init__(self, filename, headers=["e", "e_dot", "e_int", "stamp"]):
+    def __init__(self, filename, headers=["e", "$\\dot{e}$", "$\\int e$", "stamp"]):
         
         self.filename = filename
 

@@ -1,6 +1,7 @@
 from typing import List
 from math import exp
 import numpy as np
+from utilities import Logger
 
 # Type of planner
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
@@ -36,7 +37,7 @@ class planner:
     def trajectory_planner(self, pose_init) -> List[tuple[float, float]]:
         x0 = pose_init[0]
         y0 = pose_init[1]
-        FUNCTION = "POLYNOMIAL"  # options: POLYNOMIAL, EXPONENTIAL
+        FUNCTION = "EXPONENTIAL"  # options: POLYNOMIAL, EXPONENTIAL
 
         xs = np.arange(start=-1, stop=1, step=0.1)
         if FUNCTION == "POLYNOMIAL":
@@ -53,7 +54,14 @@ class planner:
         ys += y0 - ys[0]
 
         # print(list(map(tuple, np.vstack((xs, ys)).T)))
+        traj = list(map(tuple, np.vstack((xs, ys)).T))
+
+        # save values for plotting
+        logger = Logger("data/trajectory.csv", ["x [m]", "y [m]"])
+        for x, y in traj:
+            logger.log_values([x, y])
+        logger.save_log()
 
         # the return should be a list of trajectory points: [ [x1,y1], ..., [xn,yn]]
-        return list(map(tuple, np.vstack((xs, ys)).T))
+        return traj
 
