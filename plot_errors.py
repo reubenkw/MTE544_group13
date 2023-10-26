@@ -77,7 +77,7 @@ def plot_traj(dir: Path, traj_name: str, ctrlr_name: str) -> None:
     f_pose = dir.joinpath("robot_pose.csv")
     f_save = dir.joinpath("graph.png")
 
-    fig, ax0 = plt.subplots(1, 1, figsize=(6, 6))
+    fig, ax0 = plt.subplots(1, 1)
     fig.suptitle(f"Robot {traj_name.capitalize()} Path Following Using {ctrlr_name}")
 
     # plot ideal traj
