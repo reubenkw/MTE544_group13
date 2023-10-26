@@ -79,9 +79,7 @@ def plot_errors(dir):
     ax3.legend()
     ax3.grid()
 
-    plt.show()
-
-    plt.savefig(f_save, transparent=True, bbox_inches="tight")
+    plt.savefig(f_save)
 
 
 import argparse

@@ -24,8 +24,8 @@ class controller:
     def __init__(self, klp=0.2, klv=0.2, kli=0.2, kap=0.2, kav=0.2, kai=0.2, is_sim=False):
         
         # TODO Part 5 and 6: Modify the below lines to test your PD, PI, and PID controller
-        self.PID_linear=PID_ctrl(PID, klp, klv, kli, filename_="data/linear.csv")
-        self.PID_angular=PID_ctrl(PID, kap, kav, kai, filename_="data/angular.csv")
+        self.PID_linear=PID_ctrl(P, klp, klv, kli, filename_="data/linear.csv")
+        self.PID_angular=PID_ctrl(P, kap, kav, kai, filename_="data/angular.csv")
 
         if is_sim:
             self.linear_vel_th = SIM_LINEAR_VEL_TH
