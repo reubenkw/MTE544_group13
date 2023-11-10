@@ -14,7 +14,7 @@ By the end of this lab, participants will be able to:
 
 
 #### The summary of what you should learn is as following:
-- You will learn how to derive the needed matrices and perform localization using an EKF by using IMU and wheel encoders.
+- You will learn how to derive the needed functions and matrices and perform localization using an EKF by using IMU and wheel encoders (as odom).
 
 **NOTE** this Lab builds on top of Lab 2. A complete solution to Lab 2 is provided within this lab so that even if you did not conclude Lab 2's implementation, you can still work on Lab 3. You are welcome to replace some of the code with your own development from Lab 2.
 
