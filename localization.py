@@ -5,6 +5,7 @@ from utilities import Logger
 from rclpy.time import Time
 
 from utilities import euler_from_quaternion, calculate_angular_error, calculate_linear_error
+from rclpy.qos import QoSProfile, ReliabilityPolicy, DurabilityPolicy
 from rclpy.node import Node
 from rclpy import create_node
 from geometry_msgs.msg import Twist
@@ -54,19 +55,22 @@ class localization(Node):
         
         Q= 0.5 * np.eye(6)
 
-        R= 0.5 * np.eye(6)
+        R= 0.5 * np.eye(4)
         
-        P= np.zeros((6, 6)) # initial covariance
+        P= np.zeros((6, 6)) # initial covariance (maybe P=Q)
         
         self.kf=kalman_filter(P, Q, R, x, dt)
         
         # TODO Part 3: Use the odometry and IMU data for the EKF
         # self.odom_sub=message_filters.Subscriber(...)
         # self.imu_sub=message_filters.Subscriber(...)
-        n0 = create_node("odom_sub")
-        n1 = create_node("imu_sub")
-        self.odom_sub= message_filters.Subscriber(n0, odom, "/odom")
-        self.imu_sub=message_filters.Subscriber(n1, Imu, "/imu")
+        qos = QoSProfile(
+            reliability=ReliabilityPolicy.BEST_EFFORT,
+            durability=DurabilityPolicy.VOLATILE,
+            depth=10,
+        )
+        self.odom_sub= message_filters.Subscriber(self, "/odom", odom, qos_profile=qos)
+        self.imu_sub=message_filters.Subscriber(self, "/imu", Imu, qos_profile=qos)
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.fusion_callback)
