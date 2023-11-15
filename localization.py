@@ -28,7 +28,7 @@ odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
 
 class localization(Node):
     
-    def __init__(self, type, dt, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","x", "y","stamp"]):
+    def __init__(self, type, dt, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "odom_v", "odom_w", "kf_ax", "kf_ay","kf_vx","kf_w","x", "y","stamp"]):
 
         super().__init__("localizer")
 
@@ -69,8 +69,8 @@ class localization(Node):
             durability=DurabilityPolicy.VOLATILE,
             depth=10,
         )
-        self.odom_sub= message_filters.Subscriber(self, "/odom", odom, qos_profile=qos)
-        self.imu_sub=message_filters.Subscriber(self, "/imu", Imu, qos_profile=qos)
+        self.odom_sub = message_filters.Subscriber(self, odom, "/odom", qos_profile=qos)
+        self.imu_sub = message_filters.Subscriber(self, Imu, "/imu", qos_profile=qos)
         
         time_syncher=message_filters.ApproximateTimeSynchronizer([self.odom_sub, self.imu_sub], queue_size=10, slop=0.1)
         time_syncher.registerCallback(self.fusion_callback)
@@ -87,10 +87,10 @@ class localization(Node):
         lin_accel = imu_msg.linear_acceleration
         ang_vel = odom_msg.twist.twist.angular
 
-        print(f"odom vel y: {lin_vel.y}")
-
-        z= np.array([np.sqrt(lin_vel.x ** 2 + lin_vel.y ** 2),
-                     ang_vel.z,
+        odom_v = np.sqrt(lin_vel.x ** 2 + lin_vel.y ** 2)
+        odom_w = ang_vel.z
+        z = np.array([odom_v,
+                     odom_w,
                      lin_accel.x,
                      lin_accel.y])
         
@@ -113,10 +113,12 @@ class localization(Node):
         # TODO Part 4: log your data
         # "imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","x", "y","stamp"
         time_ns = Time.from_msg(odom_msg.header.stamp).nanoseconds
-        kf_ax, kf_ay, kf_vx, kf_w = self.kf.measurement_model()
+        kf_vx, kf_w, kf_ax, kf_ay = self.kf.measurement_model()
         self.loc_logger.log_values([
             lin_accel.x,
             lin_accel.y,
+            odom_v,
+            odom_w,
             kf_ax,
             kf_ay,
             kf_vx,
