@@ -72,9 +72,9 @@ class decision_maker(Node):
         vel_msg=Twist()
 
         if self.motion_type == SPIRAL_4TUNE:
-            self.linearVelocity += 0.01 if self.linearVelocity < 1.0 else 0.0
+            self.linearVelocity += 0.01 if self.linearVelocity < 0.8 else 0.0
             vel_msg.linear.x=self.linearVelocity
-            vel_msg.angular.z=1.0
+            vel_msg.angular.z=1.2
             self.publisher.publish(vel_msg)
             return
 

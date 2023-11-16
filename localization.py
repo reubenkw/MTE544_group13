@@ -50,12 +50,16 @@ class localization(Node):
         
         # TODO Part 3: Set up the quantities for the EKF (hint: you will need the functions for the states and measurements)
         # CONFIRM THIS WITH TAS IN LAB #
+        # Q= np.array([0.2, 0.2, 0.05, 0.05, 0.4, 0.1]) * np.eye(6) # trust motion
+        # R= np.array([0.05, 0.03, 2.5, 0.6]) * np.eye(4)  # trust measurement
 
         x= np.zeros(6) # initial state
         
-        Q= 0.5 * np.eye(6)
+        # x, y, th, w, v, vdot
+        Q= np.array([0.2, 0.2, 0.05, 0.05, 0.01, 0.02]) * np.eye(6) # trust motion
 
-        R= 0.5 * np.eye(4)
+        # v, w, ax, ay (higher)
+        R= np.array([0.05, 0.03, 2.5, 0.6]) * np.eye(4)  # trust measurement
         
         P= np.zeros((6, 6)) # initial covariance (maybe P=Q)
         
@@ -83,6 +87,7 @@ class localization(Node):
         # your measurements are the linear velocity and angular velocity from odom msg
         # and linear acceleration in x and y from the imu msg
         # the kalman filter should do a proper integration to provide x,y and filter ax,ay
+        print("fusion callback")
         lin_vel = odom_msg.twist.twist.linear
         lin_accel = imu_msg.linear_acceleration
         ang_vel = odom_msg.twist.twist.angular
