@@ -1,8 +1,9 @@
+import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.gridspec import GridSpec
 from utilities import FileReader
 
-def plot_errors(filename):
+def plot_errors(filename, title):
     # imu_ax, imu_ay, odom_v, odom_w, kf_ax, kf_ay, kf_vx, kf_w, x, y, stamp, 
     headers, values=FileReader(filename).read_file()
     
@@ -13,15 +14,15 @@ def plot_errors(filename):
     for val in values:
         time_list.append(val[-1] - first_stamp)
 
-    
-    fig = plt.figure(layout="constrained", figsize=(10, 10))
+    matplotlib.rcParams.update({'font.size': 22})
+    fig = plt.figure(layout="constrained", figsize=(20, 8))
 
-    gs = GridSpec(3, 2, figure=fig)
+    gs = GridSpec(2, 3, figure=fig)
     
-    title = filename.split("/")[-1].split(".")[0].capitalize()
-    fig.suptitle(title)
+    if title:
+        fig.suptitle(title)
 
-    ax1 = fig.add_subplot(gs[0, :])
+    ax1 = fig.add_subplot(gs[:, 0])
     ax1.plot([lin[8] for lin in values], [lin[9] for lin in values])
     ax1.set_title("State Space")
     ax1.set_xlabel("x [m]")
@@ -29,7 +30,7 @@ def plot_errors(filename):
     ax1.grid()
     ax1.set_aspect("equal")
 
-    ax2 = fig.add_subplot(gs[1, 0])
+    ax2 = fig.add_subplot(gs[0, 1])
     ax2.set_title("Sensor vs Filtered (ax)")
     ax2.plot(time_list, [lin[0] for lin in values], label=headers[0])
     ax2.plot(time_list, [lin[4] for lin in values], label=headers[4])
@@ -38,7 +39,7 @@ def plot_errors(filename):
     ax2.legend()
     ax2.grid()
 
-    ax3 = fig.add_subplot(gs[1, 1])
+    ax3 = fig.add_subplot(gs[0, 2])
     ax3.set_title("Sensor vs Filtered (ay)")
     ax3.plot(time_list, [lin[1] for lin in values], label=headers[1])
     ax3.plot(time_list, [lin[5] for lin in values], label=headers[5])
@@ -47,7 +48,7 @@ def plot_errors(filename):
     ax3.legend()
     ax3.grid()
 
-    ax4 = fig.add_subplot(gs[2, 0])
+    ax4 = fig.add_subplot(gs[1, 1])
     ax4.set_title("Sensor vs Filtered (v)")
     ax4.plot(time_list, [lin[2] for lin in values], label=headers[2])
     ax4.plot(time_list, [lin[6] for lin in values], label=headers[6])
@@ -56,12 +57,12 @@ def plot_errors(filename):
     ax4.legend()
     ax4.grid()
 
-    ax5 = fig.add_subplot(gs[2, 1])
-    ax5.set_title("Sensor vs Filtered ($\omega$)")
+    ax5 = fig.add_subplot(gs[1, 2])
+    ax5.set_title("Sensor vs Filtered ($\\omega$)")
     ax5.plot(time_list, [lin[3] for lin in values], label=headers[3])
     ax5.plot(time_list, [lin[7] for lin in values], label=headers[7])
-    ax3.set_ylabel("Value [$rad/s^2$]")
-    ax3.set_xlabel("Time [ns]")
+    ax5.set_ylabel("Value [$rad/s^2$]")
+    ax5.set_xlabel("Time [ns]")
     ax5.legend()
     ax5.grid()
 
@@ -76,13 +77,19 @@ if __name__=="__main__":
 
     parser = argparse.ArgumentParser(description='Process some files.')
     parser.add_argument('--files', nargs='+', required=True, help='List of files to process')
+    parser.add_argument('--titles', nargs='+', required=False, help='List of titles corresponding to files')
     
     args = parser.parse_args()
     
     print("plotting the files", args.files)
+    print("with names", args.titles)
 
     filenames=args.files
-    for filename in filenames:
-        plot_errors(filename)
+    titles = args.titles
+    if not titles:
+        titles = [None] * len(filenames)
+    assert len(filenames) == len(titles)
+    for filename, title in zip(filenames, titles):
+        plot_errors(filename, title)
 
 
