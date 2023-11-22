@@ -15,14 +15,14 @@ def plot_errors(filename, title):
         time_list.append(val[-1] - first_stamp)
 
     matplotlib.rcParams.update({'font.size': 22})
-    fig = plt.figure(layout="constrained", figsize=(20, 8))
+    fig = plt.figure(layout="constrained", figsize=(30, 5))
 
-    gs = GridSpec(2, 3, figure=fig)
+    gs = GridSpec(1, 5, figure=fig)
     
     if title:
         fig.suptitle(title)
 
-    ax1 = fig.add_subplot(gs[:, 0])
+    ax1 = fig.add_subplot(gs[0, 0])
     ax1.plot([lin[8] for lin in values], [lin[9] for lin in values])
     ax1.set_title("State Space")
     ax1.set_xlabel("x [m]")
@@ -48,7 +48,7 @@ def plot_errors(filename, title):
     ax3.legend()
     ax3.grid()
 
-    ax4 = fig.add_subplot(gs[1, 1])
+    ax4 = fig.add_subplot(gs[0, 3])
     ax4.set_title("Sensor vs Filtered (v)")
     ax4.plot(time_list, [lin[2] for lin in values], label=headers[2])
     ax4.plot(time_list, [lin[6] for lin in values], label=headers[6])
@@ -57,7 +57,7 @@ def plot_errors(filename, title):
     ax4.legend()
     ax4.grid()
 
-    ax5 = fig.add_subplot(gs[1, 2])
+    ax5 = fig.add_subplot(gs[0, 4])
     ax5.set_title("Sensor vs Filtered ($\\omega$)")
     ax5.plot(time_list, [lin[3] for lin in values], label=headers[3])
     ax5.plot(time_list, [lin[7] for lin in values], label=headers[7])
