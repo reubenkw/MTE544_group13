@@ -12,7 +12,7 @@ data\lab\tuned_point\robotPose.csv
 "R=1, Q=0.5" 
 "R=0.5, Q=0.1" 
 "R=0.5, Q=1" 
-"Tuned Spiral" 
-"Tuned Point" 
+"Tuned R and Q for Spiral Trajectory" 
+"Tuned R and Q for Point Controller" 
 
-python plot_errors.py --files data\lab\r0_5_q0_5\robotPose.csv data\lab\r0_1q0_5\robotPose.csv data\lab\r1_q0_5\robotPose.csv data\lab\r0_5_q0_1\robotPose.csv data\lab\r0_5_q1\robotPose.csv data\lab\tuned_spiral\robotPose.csv data\lab\tuned_point\robotPose.csv --titles "R=0.5, Q=0.5" "R=0.1, Q=0.5" "R=1, Q=0.5" "R=0.5, Q=0.1" "R=0.5, Q=1" "Tuned Spiral" "Tuned Point" 
+python plot_errors.py --files data\lab\r0_5_q0_5\robotPose.csv data\lab\r0_1q0_5\robotPose.csv data\lab\r1_q0_5\robotPose.csv data\lab\r0_5_q0_1\robotPose.csv data\lab\r0_5_q1\robotPose.csv data\lab\tuned_spiral\robotPose.csv data\lab\tuned_point\robotPose.csv --titles "R=0.5, Q=0.5" "R=0.1, Q=0.5" "R=1, Q=0.5" "R=0.5, Q=0.1" "R=0.5, Q=1" "Tuned R and Q for Spiral Trajectory" "Tuned R and Q for Point Controller" 
