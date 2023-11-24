@@ -65,9 +65,6 @@ if __name__=="__main__":
     
     map_likelihood=m_utilites.make_likelihood_field()
 
+    # you can use this part of the code to test your 
+    # search algorithm regardless of the ros2 hassles
     
-    
-    
-    path=search(map_likelihood, 0, [70,90], [100,90])
-    
-    print( list(map(m_utilites.cell_2_position, path)))
