@@ -44,7 +44,7 @@ def return_path(current_node,maze):
     return path
 
 
-def search(maze, start, end, mazeOrigin):
+def search(maze, start, end):
 
     print("searching ....")
 
