@@ -43,6 +43,9 @@ def return_path(current_node,maze):
 
     return path
 
+def euclidean_cost(p0, p1) -> float:
+    return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
+
 
 def search(maze, start, end):
 
@@ -53,34 +56,39 @@ def search(maze, start, end):
     
     """
         Returns a list of tuples as a path from the given start to the given end in the given maze
-        :param maze:
+        :param maze: shape (width, height)
         :param cost
-        :param start:
-        :param end:
+        :param start: tuple[float, float]
+        :param end: tuple[float, float]
         :return:
     """
 
     # TODO PART 4 Create start and end node with initized values for g, h and f
-    start_node = Node(...)
-    start_node.g = ...
-    start_node.h = ...
-    start_node.f = ...
+    # g: current cost
+    # h: heuristic cost
+    # f: estimated cost (g+h)
+    start_end_dist = sqrt((start[0] - end[0])**2+(start[1] - end[1])**2) # Euclidean
+    start_node = Node(None, start)
+    start_node.g = 0
+    start_node.h = start_end_dist
+    start_node.f = start_node.g + start_node.h
 
     
-    end_node = Node(...)
-    end_node.g = ...
-    end_node.h = ...
-    end_node.f = ...
+    end_node = Node(None, end)
+    end_node.g = start_end_dist
+    end_node.h = 0
+    end_node.f = end_node.g + end_node.h
 
     # Initialize both yet_to_visit and visited list
     # in this list we will put all node that are yet_to_visit for exploration. 
     # From here we will find the lowest cost node to expand next
-    yet_to_visit_list = []  
+    # pixel_coordinates = np.column_stack(np.indices(maze.shape).reshape(2,-1))
+    # yet_to_visit_list = [Node(None, (pos[0], pos[1])) for pos in pixel_coordinates]
     # in this list we will put all node those already explored so that we don't explore it again
     visited_list = [] 
     
     # Add the start node
-    yet_to_visit_list.append(start_node)
+    yet_to_visit_list = [start_node]
     
     # Adding a stop condition. This is to avoid any infinite loop and stop 
     # execution after some reasonable number of steps
@@ -90,21 +98,22 @@ def search(maze, start, end):
     
     # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom 
     #(4 movements) from every positon
-    move  =  [[...], # go up
-              [...], # go left
-              [...], # go down
-              [...], # go right
-              [...], # go up left
-              [...], # go down left
-              [...], # go up right
-              [...]] # go down right
+
+    move  =  [[0 , -1], # go up
+              [-1 , 0], # go left
+              [0 ,  1], # go down
+              [1 ,  0], # go right
+              [-1, -1], # go up left
+              [-1,  1], # go down left
+              [1 , -1], # go up right
+              [1 ,  1]] # go down right
 
 
     """
         1) We first get the current node by comparing all f cost and selecting the lowest cost node for further expansion
         2) Check max iteration reached or not . Set a message and stop execution
         3) Remove the selected node from yet_to_visit list and add this node to visited list
-        4) Perofmr Goal test and return the path else perform below steps
+        4) Perform Goal test and return the path else perform below steps
         5) For selected node find out all children (use move to find children)
             a) get the current postion for the selected node (this becomes parent node for the children)
             b) check if a valid position exist (boundary will make few nodes invalid)
@@ -118,12 +127,12 @@ def search(maze, start, end):
                 d) else move the child to yet_to_visit list
     """
     # TODO PART 4 find maze has got how many rows and columns 
-    no_rows, no_columns = ...
-    
+    no_rows, no_columns = maze.shape[1], maze.shape[0]
 
     # Loop until you find the end
     
     while len(yet_to_visit_list) > 0:
+        print(len(yet_to_visit_list))
         
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1    
@@ -149,19 +158,20 @@ def search(maze, start, end):
 
         # test if goal is reached or not, if yes then return the path
         if current_node == end_node:
-
+            print("returning path")
             return return_path(current_node,maze)
 
         # Generate children from all adjacent squares
         children = []
 
+        print("current position", current_node.position)
         for new_position in move: 
-
+            
             # TODO PART 4 Get node position
-            node_position = (...)
-
+            node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
+            print(node_position)
             # TODO PART 4 Make sure within range (check if within maze boundary)
-            if (...):
+            if not (0 <= node_position[0] < no_columns and 0 <= node_position[1] < no_rows):
                 continue
 
             # Make sure walkable terrain
@@ -177,15 +187,16 @@ def search(maze, start, end):
         # Loop through children
         
         for child in children:
+            child: Node
   
             # TODO PART 4 Child is on the visited list (search entire visited list)
-            if len(...) > 0:
+            if len([node for node in visited_list if child == node]) > 0:
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = ...
+            child.g = euclidean_cost(child.position, child.parent.position) + child.parent.g
             ## Heuristic costs calculated here, this is using eucledian distance
-            child.h = ...
+            child.h = euclidean_cost(child.position, end_node.position)
 
             child.f = child.g + child.h
 

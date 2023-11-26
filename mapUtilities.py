@@ -59,9 +59,6 @@ class mapManipulator(Node):
     def getAllObstacles(self):
         image_array=self.image_array.T
 
-        
-        
-        
         indices = np.where(image_array < 10)
         
         return [self.cell_2_position([i, j]) for i, j in zip(indices[0], indices[1])]
