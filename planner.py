@@ -35,7 +35,7 @@ class planner:
         # Tune?
         self.m_utilites=mapManipulator(laser_sig=0.01)
             
-        self.costMap=self.m_utilites.make_lSikelihood_field()
+        self.costMap=self.m_utilites.make_likelihood_field()
         
 
     def trajectory_planner(self, startPoseCart, endPoseCart):
@@ -46,20 +46,20 @@ class planner:
         # the cost-map is in pixels. You can by the way, convert the pixels
         # to the cartesian coordinates and work by that index, the a_star finds
         # the path regardless. 
-        
+
         startPose=self.m_utilites.position_2_cell(startPoseCart)
         endPose=self.m_utilites.position_2_cell(endPoseCart)
 
-        print("start pose", startPoseCart)
-        print(self.costMap)
+        # print("start pose", startPoseCart, startPose)
+        # print("end pose", endPoseCart, endPose)
+        # print("origin", self.m_utilites.getOrigin(), self.m_utilites.position_2_cell(self.m_utilites.getOrigin()))
+        # print("res", self.m_utilites.getResolution())
+        # print("shape (y, x)", self.costMap.shape)
         # TODO PART 5 convert the cell pixels into the cartesian coordinates
-        print("origin", self.m_utilites.getOrigin(), self.m_utilites.getResolution())
-        print(self.m_utilites.position_2_cell(self.m_utilites.getOrigin()))
-        print(self.costMap.shape)
         found_path = search(self.costMap, startPose, endPose)
         path_coords = list(map(self.m_utilites.cell_2_position, found_path))
 
-        print("path", path_coords)
+        # print("path", path_coords)
 
 
         # TODO PART 5 return the path as list of [x,y]

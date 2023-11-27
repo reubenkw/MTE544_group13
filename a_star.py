@@ -75,7 +75,7 @@ def search(maze, start, end):
 
     
     end_node = Node(None, end)
-    end_node.g = start_end_dist
+    end_node.g = 999999999
     end_node.h = 0
     end_node.f = end_node.g + end_node.h
 
@@ -132,7 +132,6 @@ def search(maze, start, end):
     # Loop until you find the end
     
     while len(yet_to_visit_list) > 0:
-        print(len(yet_to_visit_list))
         
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1    
@@ -158,18 +157,17 @@ def search(maze, start, end):
 
         # test if goal is reached or not, if yes then return the path
         if current_node == end_node:
-            print("returning path")
+            print("returning good path")
             return return_path(current_node,maze)
 
         # Generate children from all adjacent squares
         children = []
 
-        print("current position", current_node.position)
         for new_position in move: 
             
             # TODO PART 4 Get node position
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
-            print(node_position)
+
             # TODO PART 4 Make sure within range (check if within maze boundary)
             if not (0 <= node_position[0] < no_columns and 0 <= node_position[1] < no_rows):
                 continue
