@@ -58,8 +58,8 @@ class planner:
         startPose=self.m_utilites.position_2_cell(startPoseCart)
         endPose=self.m_utilites.position_2_cell(endPoseCart)
 
-        # print("start pose", startPoseCart, startPose)
-        # print("end pose", endPoseCart, endPose)
+        print("start pose", startPoseCart, startPose)
+        print("end pose", endPoseCart, endPose)
         # print("origin", self.m_utilites.getOrigin(), self.m_utilites.position_2_cell(self.m_utilites.getOrigin()))
         # print("res", self.m_utilites.getResolution())
         # print("shape (y, x)", self.costMap.shape)

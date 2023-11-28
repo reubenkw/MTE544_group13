@@ -47,14 +47,13 @@ def return_path(current_node,maze):
 def euclidean_cost(p0, p1) -> float:
     return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
 
-def manhattan_cost(p0, p1) -> float:
-    return abs(p0[0]- p1[0]) + abs(p0[1] - p1[1])
-
+def manhatten_cost(p0, p1) -> float:
+    return abs(p0[0] - p1[0]) + abs(p0[1] - p1[1])
 
 def search(maze, cost, start, end):
 
     print("searching ....")
-
+    
     maze = maze.T
     
     
@@ -196,9 +195,9 @@ def search(maze, cost, start, end):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = cost(child.position, child.parent.position) + child.parent.g
+            child.g = euclidean_cost(child.position, child.parent.position) + child.parent.g
             ## Heuristic costs calculated here, this is using eucledian distance
-            child.h = cost(child.position, end_node.position)
+            child.h = euclidean_cost(child.position, end_node.position)
 
             child.f = child.g + child.h
 
