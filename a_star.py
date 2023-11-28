@@ -53,7 +53,7 @@ def manhatten_cost(p0, p1) -> float:
 def search(maze, cost, start, end):
 
     print("searching ....")
-    
+
     maze = maze.T
     
     
@@ -76,11 +76,11 @@ def search(maze, cost, start, end):
     start_node.h = start_end_dist
     start_node.f = start_node.g + start_node.h
 
-    
+    # end node values will be calculated as it is reached
     end_node = Node(None, end)
-    end_node.g = 999999999
-    end_node.h = 0
-    end_node.f = end_node.g + end_node.h
+    end_node.g = None
+    end_node.h = None
+    end_node.f = None
 
     # Initialize both yet_to_visit and visited list
     # in this list we will put all node that are yet_to_visit for exploration. 
