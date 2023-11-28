@@ -2,6 +2,7 @@
 from mapUtilities import *
 from a_star import *
 from enum import Enum
+from a_star import manhattan_cost, euclidean_cost
 
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
 
@@ -44,18 +45,9 @@ class planner:
         
 
     def trajectory_planner(self, startPoseCart, endPoseCart):
-        # Potential cost functions to pass into astar
-        def euclidean_cost(p0, p1) -> float:
-            return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
-
-        def manhattan_cost(p0, p1) -> float:
-            return abs(p0[0]- p1[0]) + abs(p0[1] - p1[1])
-        
         # Set the cost function for astar heuristic
         cost_function_type = CostFunctions.EUCLIDEAN
         cost_function = euclidean_cost if cost_function_type == CostFunctions.EUCLIDEAN else manhattan_cost
-
-
 
         # This is to convert the cartesian coordinates into the 
         # the pixel coordinates of the map image, remmember,

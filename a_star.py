@@ -43,6 +43,13 @@ def return_path(current_node,maze):
 
     return path
 
+# Potential cost functions to pass into astar
+def euclidean_cost(p0, p1) -> float:
+    return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
+
+def manhattan_cost(p0, p1) -> float:
+    return abs(p0[0]- p1[0]) + abs(p0[1] - p1[1])
+
 
 def search(maze, cost, start, end):
 
