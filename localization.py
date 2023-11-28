@@ -29,7 +29,7 @@ odom_qos=QoSProfile(reliability=2, durability=2, history=1, depth=10)
 
 class localization(Node):
     
-    def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["imu_ax", "imu_ay", "kf_ax", "kf_ay","kf_vx","kf_w","kf_x", "kf_y","stamp"]):
+    def __init__(self, type, loggerName="robotPose.csv", loggerHeaders=["pos_x", "pos_y", "pos_theta", "stamp"]):
 
         super().__init__("localizer")
         
@@ -102,6 +102,13 @@ class localization(Node):
                             normalize_angle(xhat[2]),
                             odom_msg.header.stamp])
         
+        self.loc_logger.log_values([
+                odom_msg.pose.pose.position.x, 
+                odom_msg.pose.pose.position.y, 
+                euler_from_quaternion(odom_msg.pose.pose.orientation), 
+                Time.from_msg(self.pose[3]).nanoseconds
+            ])
+        
     def odom_callback(self, pose_msg):
         
         self.pose=[ pose_msg.pose.pose.position.x,
@@ -109,7 +116,7 @@ class localization(Node):
                     euler_from_quaternion(pose_msg.pose.pose.orientation),
                     pose_msg.header.stamp]
         
-        #self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
+        self.loc_logger.log_values([self.pose[0], self.pose[1], self.pose[2], Time.from_msg(self.pose[3]).nanoseconds])
 
         
     def getPose(self):

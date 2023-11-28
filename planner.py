@@ -66,6 +66,7 @@ class planner:
         # TODO PART 5 convert the cell pixels into the cartesian coordinates
         found_path = search(self.costMap, cost_function, startPose, endPose)
         path_coords = list(map(self.m_utilites.cell_2_position, found_path))
+        print(path_coords)
 
         # print("path", path_coords)
 
