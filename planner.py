@@ -1,8 +1,13 @@
 
 from mapUtilities import *
 from a_star import *
+from enum import Enum
 
 POINT_PLANNER=0; TRAJECTORY_PLANNER=1
+
+class CostFunctions(Enum):
+    EUCLIDEAN = 0,
+    MANHATTAN = 1
 
 class planner:
     def __init__(self, type_, mapName="room"):
@@ -39,6 +44,17 @@ class planner:
         
 
     def trajectory_planner(self, startPoseCart, endPoseCart):
+        # Potential cost functions to pass into astar
+        def euclidean_cost(p0, p1) -> float:
+            return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
+
+        def manhattan_cost(p0, p1) -> float:
+            return abs(p0[0]- p1[0]) + abs(p0[1] - p1[1])
+        
+        # Set the cost function for astar heuristic
+        cost_function_type = CostFunctions.EUCLIDEAN
+        cost_function = euclidean_cost if cost_function_type == CostFunctions.EUCLIDEAN else manhattan_cost
+
 
 
         # This is to convert the cartesian coordinates into the 
@@ -56,7 +72,7 @@ class planner:
         # print("res", self.m_utilites.getResolution())
         # print("shape (y, x)", self.costMap.shape)
         # TODO PART 5 convert the cell pixels into the cartesian coordinates
-        found_path = search(self.costMap, startPose, endPose)
+        found_path = search(self.costMap, cost_function, startPose, endPose)
         path_coords = list(map(self.m_utilites.cell_2_position, found_path))
 
         # print("path", path_coords)

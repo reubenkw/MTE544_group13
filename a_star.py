@@ -43,11 +43,8 @@ def return_path(current_node,maze):
 
     return path
 
-def euclidean_cost(p0, p1) -> float:
-    return sqrt((p0[0] - p1[0])**2+(p0[1] - p1[1])**2)
 
-
-def search(maze, start, end):
+def search(maze, cost, start, end):
 
     print("searching ....")
 
@@ -67,7 +64,7 @@ def search(maze, start, end):
     # g: current cost
     # h: heuristic cost
     # f: estimated cost (g+h)
-    start_end_dist = sqrt((start[0] - end[0])**2+(start[1] - end[1])**2) # Euclidean
+    start_end_dist = cost(start, end)
     start_node = Node(None, start)
     start_node.g = 0
     start_node.h = start_end_dist
@@ -192,9 +189,9 @@ def search(maze, start, end):
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = euclidean_cost(child.position, child.parent.position) + child.parent.g
+            child.g = cost(child.position, child.parent.position) + child.parent.g
             ## Heuristic costs calculated here, this is using eucledian distance
-            child.h = euclidean_cost(child.position, end_node.position)
+            child.h = cost(child.position, end_node.position)
 
             child.f = child.g + child.h
 
