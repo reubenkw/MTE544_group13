@@ -102,9 +102,6 @@ def search(maze, cost: callable, start, end):
     # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom 
     #(4 movements) from every positon
 
-    # CLARIFY THIS TOMORROW IN LAB
-    #   - do we need different movements for manhatten
-    #   - do we need 8 or 4 movements for euclidean
     move  =  [[0 , -1], # go up
               [-1 , 0], # go left
               [0 ,  1], # go down

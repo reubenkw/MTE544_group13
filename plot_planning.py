@@ -18,11 +18,10 @@ def plot_planning():
     # plot actual path
     headers, values=FileReader("robotPose.csv").read_file()
     values = np.array(values)
-    
+
     # first_stamp=values[0][-1]
     # time_list = values[:, -1] - first_stamp
 
-    print(values[:, 0], values[:, 1])
     real_on_map = [map_utilities.position_2_cell((val[0], val[1])) for val in values]
     plt.plot(*zip(*real_on_map), label="actual path")
     
@@ -33,11 +32,17 @@ def plot_planning():
     ideal_on_map = [map_utilities.position_2_cell((val[0], val[1])) for val in ideal]
     plt.plot(*zip(*ideal_on_map), label="ideal path")
 
-    plt.legend
+    plt.scatter(*map_utilities.position_2_cell((values[0, 0], values[0, 1])), label="Start Point", c="red")
+    plt.scatter(*map_utilities.position_2_cell((values[-1, 0], values[-1, 1])), label="End Point", c="green")
+
+    plt.title("A* Path Planning (Euclidean cost)")
+    plt.xlabel("x [m]")
+    plt.ylabel("y [m]")
+    
+    plt.grid()
+    plt.legend()
     plt.show()
 
-    
-    
 
 if __name__=="__main__":
     plot_planning()

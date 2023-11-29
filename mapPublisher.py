@@ -8,6 +8,8 @@ from mapUtilities import *
 
 
 def timerCallback():
+    static_transform_stamped.header.stamp = node.get_clock().now().to_msg()
+    static_broadcaster.sendTransform(static_transform_stamped)
     Publisher.publish(occGrid)
 
 if __name__ == "__main__":
@@ -46,6 +48,6 @@ if __name__ == "__main__":
 
     occGrid = map_.to_message()
 
-    node.create_timer(1.0, timerCallback)
+    node.create_timer(0.1, timerCallback)
 
     rclpy.spin(node)
