@@ -1,17 +1,30 @@
 import matplotlib.pyplot as plt
-import matplotlib.image as mpimg
+from matplotlib.ticker import FormatStrFormatter
+import matplotlib.ticker as ticker
 import numpy as np
 from utilities import FileReader
 from mapUtilities import mapManipulator
 import rclpy
 
-def plot_planning(map_utilities, ideal, fname, ax, title):
-    # plot map
+
+def plot_planning(map_utilities, ideal, fname, ax: plt.Axes, title):
     width, height, max_value, pixels = map_utilities.read_pgm("room.pgm")
     map_data = np.array(pixels, dtype=np.uint8).reshape((height, width))
-
-    ax.imshow(map_data, cmap="gray", vmin=0, vmax=max_value)
     
+    # do way too much work to see distance on the x and y ticks
+    ticks_x = ticker.FuncFormatter(lambda x, pos: '{0:.2f}'.format(map_utilities.cell_2_position((x, 0))[0]))
+    ax.xaxis.set_major_formatter(ticks_x)
+
+    ticks_y = ticker.FuncFormatter(lambda y, pos: '{0:.2f}'.format(map_utilities.cell_2_position((0, y))[1]))
+    ax.yaxis.set_major_formatter(ticks_y)
+
+    # plot map
+    ax.imshow(map_data, cmap="gray", vmin=0, vmax=max_value)
+
+    # plot origin
+    origin = map_utilities.position_2_cell((0, 0))
+    ax.scatter(*origin, label="Origin", c="purple")
+
     # plot actual path
     headers, values=FileReader(fname).read_file()
     values = np.array(values)
