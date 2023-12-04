@@ -38,7 +38,7 @@ class planner:
         # the standard deviation for the gausiian for which
         # the mean is located on the occupant grid. 
         
-        # Tune?
+        # Tunned to avoid walls
         self.m_utilites=mapManipulator(laser_sig=0.35)
             
         self.costMap=self.m_utilites.make_likelihood_field()
@@ -67,9 +67,6 @@ class planner:
         found_path = search(self.costMap, cost_function, startPose, endPose)
         path_coords = list(map(self.m_utilites.cell_2_position, found_path))
         print(path_coords)
-
-        # print("path", path_coords)
-
 
         # TODO PART 5 return the path as list of [x,y]
         return path_coords

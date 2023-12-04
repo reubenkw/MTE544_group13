@@ -1,5 +1,4 @@
 import numpy as np
-import matplotlib.pyplot as plt
 from math import sqrt
 
 
@@ -99,11 +98,10 @@ def search(maze, cost: callable, start, end):
     max_iterations = (len(maze) // 2) ** 10
 
     
-    # TODO PART 4 what squares do we search . serarch movement is left-right-top-bottom 
-    #(4 movements) from every positon
-
+    # TODO PART 4 what squares do we search . serarch movement is in same order as below 
+    #(8 movements) from every positon
     move  =  [[0 , -1], # go up
-              [-1 , 0], # go left
+              [-1,  0], # go left
               [0 ,  1], # go down
               [1 ,  0], # go right
               [-1, -1], # go up left
@@ -130,6 +128,7 @@ def search(maze, cost: callable, start, end):
                 d) else move the child to yet_to_visit list
     """
     # TODO PART 4 find maze has got how many rows and columns 
+    # maze shape in row, col
     no_rows, no_columns = maze.shape[1], maze.shape[0]
 
     # Loop until you find the end
@@ -139,7 +138,6 @@ def search(maze, cost: callable, start, end):
         # Every time any node is referred from yet_to_visit list, counter of limit operation incremented
         outer_iterations += 1    
 
-        
         # Get the current node
         current_node = yet_to_visit_list[0]
         current_index = 0
@@ -169,9 +167,11 @@ def search(maze, cost: callable, start, end):
         for new_position in move: 
             
             # TODO PART 4 Get node position
+            # add move direction to current position
             node_position = (current_node.position[0] + new_position[0], current_node.position[1] + new_position[1])
 
             # TODO PART 4 Make sure within range (check if within maze boundary)
+            # position needs to be within map
             if not (0 <= node_position[0] < no_columns and 0 <= node_position[1] < no_rows):
                 continue
 
@@ -191,12 +191,13 @@ def search(maze, cost: callable, start, end):
             child: Node
   
             # TODO PART 4 Child is on the visited list (search entire visited list)
+            # if child in visited_list:
             if len([node for node in visited_list if child == node]) > 0:
                 continue
 
             # TODO PART 4 Create the f, g, and h values
-            child.g = cost(child.position, child.parent.position) + child.parent.g
-            ## Heuristic costs calculated here, this is using eucledian distance
+            child.g = euclidean_cost(child.position, child.parent.position) + child.parent.g
+            ## Heuristic costs calculated here, this is using either eucledian or hamilton distance
             child.h = cost(child.position, end_node.position)
 
             child.f = child.g + child.h
